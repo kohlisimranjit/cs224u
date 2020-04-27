@@ -1,0 +1,165 @@
+"""
+Some observations about f-score:
+baseline bow featurizer = 0.558 
+GloVe = 0.515 
+svm = 0.560
+directional_uni = 0.605
+middle_bigram_pos_tag_featurizer = 0.434 
+synset_featurizer = 0.526
+
+I ran experiment with directional glove logisitc:
+Glove_directional=0.547
+From directional_bag_of_words & glove directional with logistic
+Seems that directional features improved performace.
+This makes sense because not all relations are symetric
+I tried multiple attempts with glove-SVM directional but it did not suceed and my system crashed
+
+So I evolved my system with gloves to a directional_glove with (sum,min,max) features (feature count 300*6=1800) concataned
+the score was: precision 0.503     recall 0.429   f-score 0.484
+
+
+
+With GLove unidirectional (sum,min,max) features (feature count 300*3=900)  
+the score was precision=0.611      recall 0.299  f-score 0.497:
+relation              precision     recall    f-score    support       size
+------------------    ---------  ---------  ---------  ---------  ---------
+adjoins                   0.788      0.447      0.683        340       5716
+author                    0.802      0.438      0.688        509       5885
+capital                   0.369      0.253      0.338         95       5471
+contains                  0.614      0.573      0.605       3904       9280
+film_performance          0.750      0.384      0.630        766       6142
+founders                  0.656      0.266      0.507        380       5756
+genre                     0.367      0.106      0.246        170       5546
+has_sibling               0.718      0.255      0.526        499       5875
+has_spouse                0.756      0.360      0.620        594       5970
+is_a                      0.618      0.205      0.441        497       5873
+nationality               0.565      0.259      0.457        301       5677
+parents                   0.790      0.410      0.667        312       5688
+place_of_birth            0.519      0.236      0.419        233       5609
+place_of_death            0.321      0.113      0.235        159       5535
+profession                0.582      0.215      0.434        247       5623
+worked_at                 0.568      0.260      0.459        242       5618
+------------------    ---------  ---------  ---------  ---------  ---------
+macro-average             0.611      0.299      0.497       9248      95264
+
+
+With GLove directional (min,max) features (feature count 300*2*2=1200)  the score was 0.465 :
+relation              precision     recall    f-score    support       size
+------------------    ---------  ---------  ---------  ---------  ---------
+adjoins                   0.574      0.332      0.501        340       5716
+author                    0.708      0.576      0.677        509       5885
+capital                   0.276      0.221      0.263         95       5471
+contains                  0.748      0.700      0.738       3904       9280
+film_performance          0.740      0.620      0.712        766       6142
+founders                  0.564      0.384      0.516        380       5756
+genre                     0.414      0.341      0.397        170       5546
+has_sibling               0.487      0.220      0.392        499       5875
+has_spouse                0.629      0.370      0.552        594       5970
+is_a                      0.527      0.258      0.436        497       5873
+nationality               0.374      0.246      0.339        301       5677
+parents                   0.640      0.513      0.610        312       5688
+place_of_birth            0.373      0.266      0.346        233       5609
+place_of_death            0.214      0.176      0.205        159       5535
+profession                0.423      0.243      0.368        247       5623
+worked_at                 0.422      0.281      0.384        242       5618
+------------------    ---------  ---------  ---------  ---------  ---------
+macro-average             0.507      0.359      0.465       9248      95264
+
+Therefore with additional features the model doesn't do well with glove
+
+Boosting with glove directional: 0.511
+Executing experiment
+relation              precision     recall    f-score    support       size
+------------------    ---------  ---------  ---------  ---------  ---------
+adjoins                   0.832      0.438      0.705        340       5716
+author                    0.778      0.599      0.734        509       5885
+capital                   0.451      0.242      0.385         95       5471
+contains                  0.756      0.678      0.739       3904       9280
+film_performance          0.759      0.603      0.721        766       6142
+founders                  0.657      0.353      0.560        380       5756
+genre                     0.438      0.188      0.346        170       5546
+has_sibling               0.636      0.267      0.498        499       5875
+has_spouse                0.713      0.360      0.596        594       5970
+is_a                      0.497      0.191      0.377        497       5873
+nationality               0.410      0.183      0.329        301       5677
+parents                   0.754      0.490      0.681        312       5688
+place_of_birth            0.473      0.223      0.386        233       5609
+place_of_death            0.459      0.176      0.347        159       5535
+profession                0.495      0.186      0.372        247       5623
+worked_at                 0.476      0.244      0.400        242       5618
+------------------    ---------  ---------  ---------  ---------  ---------
+macro-average             0.599      0.339      0.511       9248      95264
+Done!
+
+
+Adding further features didn't result in convergence. Since Boosting, SVM with more features
+resulted in models running with no outputs and onl
+
+Boosting with directional sum, min, max features resulted in 0.525 
+relation              precision     recall    f-score    support       size
+------------------    ---------  ---------  ---------  ---------  ---------
+adjoins                   0.801      0.450      0.693        340       5716
+author                    0.783      0.623      0.744        509       5885
+capital                   0.514      0.200      0.391         95       5471
+contains                  0.771      0.679      0.750       3904       9280
+film_performance          0.746      0.653      0.725        766       6142
+founders                  0.699      0.416      0.615        380       5756
+genre                     0.460      0.235      0.386        170       5546
+has_sibling               0.671      0.283      0.527        499       5875
+has_spouse                0.723      0.369      0.606        594       5970
+is_a                      0.555      0.173      0.385        497       5873
+nationality               0.459      0.223      0.379        301       5677
+parents                   0.753      0.538      0.698        312       5688
+place_of_birth            0.443      0.219      0.368        233       5609
+place_of_death            0.357      0.157      0.285        159       5535
+profession                0.533      0.231      0.422        247       5623
+worked_at                 0.516      0.260      0.432        242       5618
+------------------    ---------  ---------  ---------  ---------  ---------
+macro-average             0.612      0.357      0.525       9248      95264
+Done!
+
+
+
+Boosting on terse
+ non-directional 0.708      0.182      0.437  
+ directional 0.685      0.199      0.441
+ 
+ Boosting gave really poor results on many different combinations
+ 
+ Word POS as features
+SVM terse non-directional  macro-average        0.664      0.221      0.467 
+SVM terse directional  macro-average             0.665      0.221      0.467
+
+
+ Uni Directional logistic 10K features 0.442 ? 0.726      0.199      0.453 
+ 
+ 
+Directional logistic macro-average             0.726      0.199      0.453       9248      95264
+feature_counts 10713
+
+
+From this it was evident that expanding features beyond a certain point is not resulting in great improvements
+TO make the learning more robust we need to cut down features. 
+In an ideal situation you expect verbs and common nouns to truly convey the information given unseen 
+data with new Proper Nouns. So we could essentially cut out proper nouns, prevent overfitting learn more
+meaningful features and achieve faster convergence.
+ 
+ Directional middle
+ SVM
+ macro-average             0.666      0.224      0.470 
+ Logistic
+ macro-average             0.726      0.198      0.451
+ 
+## 
+ Directional all:
+ logistic
+ macro-average             0.621      0.211      0.425     
+ 
+feature_counts 77176
+
+SVM macro-average             0.520      0.215      0.395  
+
+Directional_glove
+macro-average             0.662      0.251      0.483  
+macro-average             0.616      0.297      0.500  
+"""
