@@ -2,7 +2,7 @@ import re
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-inputFilePath',          type=str,   default='hw_wordsim.py',  help="Path to your submission file.")
+parser.add_argument('-inputFilePath',          type=str,   default='hw_rel_ext.py',  help="Path to your submission file.")
 args = parser.parse_args()
 
 START_TEXT = r"# Enter your system description in this cell"
